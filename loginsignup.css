@@ -1,0 +1,141 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+.navbar {
+  background-color: #ffffff;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.navbar h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1a73e8;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #1a73e8;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+  color: #0c5cd7;
+}
+
+.auth-container {
+  max-width: 400px;
+  background: #ffffff;
+  margin: 60px auto;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.auth-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 22px;
+  color: #1a1a1a;
+}
+
+.auth-container input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.auth-container input:focus {
+  border-color: #1a73e8;
+  outline: none;
+}
+
+.auth-container button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  background-color: #919191;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.auth-container button:hover {
+  background-color: #707070;
+}
+
+.auth-container p {
+  font-size: 14px;
+  color: #e63946;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* OTP Section Styling */
+#otp-section {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
+}
+
+#otp-section p {
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+#otp-section input {
+  text-align: center;
+  letter-spacing: 4px;
+  font-weight: 600;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  background-color: #1a73e8;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-icon:hover {
+  background-color: #0c5cd7;
+}
+
+.btn-icon svg {
+  flex-shrink: 0;
+  vertical-align: middle;
+}
