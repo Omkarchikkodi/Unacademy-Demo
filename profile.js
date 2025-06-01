@@ -1,3 +1,8 @@
+import { auth, db } from './firebase-config.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('loggedInUser'));
     if (!user) {
@@ -21,9 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const pincodeInput = document.getElementById('pincode');
 
     // District options by state
-    
     const districtsByState = {
-        "AndhraPradesh": [
+        AndhraPradesh: [
             "Anantapur", "Chittoor", "East Godavari", "Guntur", "Kadapa (YSR)", "Krishna",
             "Kurnool", "Nellore", "Prakasam", "Srikakulam", "Sri Potti Sriramulu Nellore", "Visakhapatnam",
             "Vizianagaram", "West Godavari"
@@ -185,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
             "Murshidabad", "Nadia", "North 24 Parganas", "Paschim Bardhaman", "Paschim Medinipur",
             "Purba Bardhaman", "Purba Medinipur", "Purulia", "South 24 Parganas", "Uttar Dinajpur"
         ]
+        
     };
 
     // Handle state change → populate districts
@@ -201,20 +206,50 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Pre-fill user form data
-    classSelect.value = user.class || '';
-    cityInput.value = user.city || '';
-    phoneInput.value = user.phone || '';
-    stateSelect.value = user.state || '';
+    // // Pre-fill user form data
+    // classSelect.value = user.class || '';
+    // cityInput.value = user.city || '';
+    // phoneInput.value = user.phone || '';
+    // stateSelect.value = user.state || '';
 
-    // 🔄 Trigger the state change so districts populate
-    stateSelect.dispatchEvent(new Event('change'));
+    // // 🔄 Trigger the state change so districts populate
+    // stateSelect.dispatchEvent(new Event('change'));
 
-    districtSelect.value = user.district || '';
-    pincodeInput.value = user.pincode || '';
+    // districtSelect.value = user.district || '';
+    // pincodeInput.value = user.pincode || '';
+
+    // 🔥 Load form values from Firestore (not from localStorage!)
+    onAuthStateChanged(auth, async (firebaseUser) => {
+        console.log("✅ onAuthStateChanged triggered");
+        if (firebaseUser) {
+            const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+            if (userDoc.exists()) {
+                console.log("user found");
+                const data = userDoc.data();
+                classSelect.value = data.class || '';
+                cityInput.value = data.city || '';
+                phoneInput.value = data.phone || '';
+                stateSelect.value = data.state || '';
+
+                // 🔄 Populate districts based on state before setting district
+                stateSelect.dispatchEvent(new Event('change'));
+
+                districtSelect.value = data.district || '';
+                pincodeInput.value = data.pincode || '';
+            } else {
+                console.warn("⚠️ No user profile found in Firestore");
+            }
+        } else {
+            console.warn("⚠️ User not authenticated");
+        }
+    });
 });
 
+window.saveProfile = saveProfile;
+window.logout = logout;
+
 async function saveProfile() {
+    console.log('Save profile');
     const user = JSON.parse(localStorage.getItem('loggedInUser'));
 
     user.class = document.getElementById('classSelect').value;
@@ -233,24 +268,9 @@ async function saveProfile() {
 
     // 🔥 Upload to Firestore
     try {
-        // Firebase imports (only needed once in your file)
-        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js");
-        const { getAuth, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js");
-        const { getFirestore, doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        const { setDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js");
+        const { onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js");
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAzQUYZnIDIco_SHCMI_MmGQIeBnQdjxzo",
-            authDomain: "login-37063.firebaseapp.com",
-            projectId: "login-37063",
-            storageBucket: "login-37063.firebasestorage.app",
-            messagingSenderId: "85321873353",
-            appId: "1:85321873353:web:cc758c0ef336e0742c1a18",
-            measurementId: "G-1HNENVH00P"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
 
         // Ensure user is authenticated
         onAuthStateChanged(auth, async (firebaseUser) => {
@@ -279,5 +299,6 @@ async function saveProfile() {
 
 
 function logout() {
+    localStorage.removeItem('loggedInUser');
     window.location.href = 'home.html';
 }
