@@ -6,7 +6,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase
 document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('loggedInUser'));
     if (!user) {
-        alert("User not logged in");
+        showPopup("User not logged in");
         window.location.href = 'login.html';
         return;
     }
@@ -260,7 +260,7 @@ async function saveProfile() {
     user.pincode = document.getElementById('pincode').value;
 
     if (!/^\d{6}$/.test(user.pincode)) {
-        alert("Pincode must be exactly 6 digits.");
+        showPopup("Pincode must be exactly 6 digits.");
         return;
     }
 
@@ -296,9 +296,31 @@ async function saveProfile() {
     }, 5000);
 }
 
-
-
 function logout() {
     localStorage.removeItem('loggedInUser');
     window.location.href = 'home.html';
+}
+
+let popupTimeout;
+
+function showPopup(message, duration = 3000) {
+  const popup = document.getElementById("customPopup");
+  const msgBox = document.getElementById("popupMessage");
+
+  if (popup && msgBox) {
+    // Clear existing timeout
+    if (popupTimeout) {
+      clearTimeout(popupTimeout);
+    }
+
+    msgBox.textContent = message;
+    popup.classList.add("show");
+    popup.classList.remove("hidden");
+
+    // Hide after duration
+    popupTimeout = setTimeout(() => {
+      popup.classList.remove("show");
+      popup.classList.add("hidden");
+    }, duration);
+  }
 }
